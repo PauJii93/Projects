@@ -1,0 +1,84 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+    /*align-items: center;*/
+    border-style: groove;
+    height: 1100px;
+  }
+    
+body{
+    display: block;
+    transition: background-color 0.5s ease-in-out;
+}
+
+
+/*Spel ramen och vart den ska vara placerad*/
+    #spelCanvas {
+        display: flex; /*flex som lyckades centrera den*/
+        margin: auto; /*automatisk marginal*/
+        background-color: #353333;   /*bakgrundsfärgen för spelet*/
+        border: 2px solid #000 /*ramen runt spelet är svart med en smal ram*/
+        
+    }
+
+/*Rubriks inställningar*/
+    h2, h3{
+        text-align: center; /*får båda huvudrubriker centrerad*/
+        font-family: 'Times New Roman', Times, serif; /*typsnitten*/
+        font-size: 25pt; /*storleken på dessa rubriker*/
+    }
+
+    /*Poäng inställningar*/
+    #poang {
+        align-content: center;   /*centrerad*/
+        text-align: center; /*Är centrerad som de andra*/
+        font-size: 60pt;/*storlketen för poäng */
+        
+    }
+
+    p{
+        text-align: center; /*p taggen blir centrerad*/
+        font-family: 'Courier New', Courier, monospace; /*Typsnitt*/
+        font-size: 16pt;   /*Storlekstexten för p taggen*/
+    }
+
+    #gameOverSkarm {
+        display: none;
+        color: red;
+        background-color: lightgray;
+        box-shadow: 0 0 10px rgba(175, 22, 22, 0.3);
+        padding: 10px;
+        border-radius: 80px;
+        width: 100%;
+        text-align: center; /* Centrerar texten */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+   #visaGameOver{
+   display:none;
+    
+   }
+    /*Knapp Starta om inställningar*/
+    #restartKnapp {
+       align-content: center;
+        text-align: center; /*Centrerar texten innanför knappen*/
+        padding: 10px 20px; /*Ger space runt texten innanför knappen*/
+        font-size: 18px; /*Storleken på texten för knappen*/
+        background-color: #4CAF50; /*Färgen för knappen*/
+        display: flex;  /*Flex som resulterade i mitten/centrerad*/
+        border-radius: 4px; /*Rundheten av knappen vid kanterna*/
+        text-transform: uppercase; /*Kräver att texten blir med Stora bokstäver*/
+        margin: 30px auto; /*mellanrummet mellan spelet och knappen*/
+        cursor: pointer;
+}
+
+    #gameOverSkarm {
+        margin-bottom: 10px;
+        display:none;
+    }
+
+  /*Paulina Abarca Jara */ 
+  

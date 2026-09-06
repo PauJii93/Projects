@@ -1,0 +1,16 @@
+//En funktion som kommer byta färger på sidan samtidigt som man spelar för en liten rolig effekt
+function changeBackgroundColor() { 
+    const colors = ['#F0D1F7', '#E5F5B6', '#BFF4F1', '#CDE1FA', '#D7CDFA']; //alla pastel färger som valdes sittande i en array
+    const body = document.body; //en referens till <body> i css
+    let index = 0; //En variabel med värdet 0, skapad för att veta vilken färg som visas eller ska visas.
+
+    setInterval(() => { //En intervall som ska göra så att färgerna upprevas
+        body.style.backgroundColor = colors[index]; // ska göra ändringen av färg i body taggen till de färg som är arrayen.
+        index = (index + 1) % colors.length; // Här förklarars att "index" /färgen kommer att i färg till den nästa i arrayen färgerna. 
+    }, 2000); // ändrandet sker varje 2sekunder
+}
+
+// När sidan laddas så kommer denna funktion att ändras.
+changeBackgroundColor();
+
+//Paulina Abarca jara

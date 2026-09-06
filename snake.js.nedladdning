@@ -1,0 +1,108 @@
+const canvas = document.getElementById("spelCanvas"); //Hämtar från mitt html id 
+const context = canvas.getContext("2d"); //Grafiktypen den har, 2d i canvas, alltså spelramen
+const boxStorlek = 20; //nummret 20 står för storleken på ormen rut kropp.
+let navigation = "höger"; //Navigation är där ormen rör sig med hjälp av tangenten. höger står för den riktingen.
+let apple = appleposition(); //Äpplet är skapat och kommer att visas random i spelcanvas.
+let poang = 0; // poäng id som är kopplat med html sant kommer göra så poäng ökar.
+let snake = []; // variabel för ormen med en array som kommer ha koll vart ormen rör sig med sitt blockliknade kropp 
+let spel = setInterval(spelLogiken, 150); // Spelet kommer startas så fort spellogiken anropas på 150 milisekunderna
+let gameOverVisad = false; //
+
+snake[0] = { // här kommer ormen att placeras  i mitten av spelcanvasen 
+    x: 10 * boxStorlek, //y och x står för placeringarna
+    y: 10 * boxStorlek
+};
+//kommer hantera spelets logik, det vill säga att så fort något händer o denna uppdateras 
+function spelLogiken() {  //dem kommer be dessa andra att också uppdateras
+    spelPanelen(); //där spelet displayas i canvasen så har denna kommando hand om hur ormen kommer gå
+    uppdateraSnakePosition(); //ormen uppdateras vid ätning
+    hanteraKollisioner(); // kontrollerar om ormen har krockat eller ej.
+}
+
+function spelPanelen() { //här ritas själva spelriktingen i spelcanvasen.
+    context.clearRect(0, 0, canvas.width, canvas.height); //Denna kommer clear de som tidigare har "ritas".
+    context.fillStyle = "red"; //något kommer att ritas rött
+    context.fillRect(apple.x, apple.y, boxStorlek, boxStorlek); //Äpplet kommer att målas rött på dens position samt storlek
+
+    for (let i = 0; i < snake.length; i++) { // Ormen ritas för varje position den är på samt loopar
+        context.fillStyle = "black"; //svart färg används för ormens kropp
+        context.fillRect(snake[i].x, snake[i].y, boxStorlek, boxStorlek);
+        context.strokeStyle = "grey"; // samt grå för ormens kontur
+        context.strokeRect(snake[i].x, snake[i].y, boxStorlek, boxStorlek);
+    }
+}
+// Här kommer koderna för hur ormen kommer att röra sig, detta uppdateras med nya kordinater utifrån navigation variabeln. ormen rör sig och så gör hans boxiga kropp vid vridning.
+function uppdateraSnakePosition() { //Skulle ormen gå åt höger så kommer det att adderas boxStorlek(kropp)
+    let snakeX = snake[0].x + (navigation === "höger" ? boxStorlek : navigation === "vänster" ? -boxStorlek : 0); //rör ormen sig till vänster så subraheras kroppen. 
+    let snakeY = snake[0].y + (navigation === "upp" ? -boxStorlek : navigation === "ner" ? boxStorlek : 0);  //Samma här, - om den går upp . 0 står för samma position/oförändrat
+
+    //Här kommer ormen att kontrolleras om den har passerat canvas längd höjd, o sätts till 0. 
+    snakeX = snakeX >= canvas.width ? 0 : snakeX < 0 ? canvas.width - boxStorlek : snakeX; //
+    snakeY = snakeY >= canvas.height ? 0 : snakeY < 0 ? canvas.height - boxStorlek : snakeY;
+    //Ormen får en nytt huvud vid y och x kordinat i spelcanvas.
+    const nyttHuvud = { x: snakeX, y: snakeY };
+    snake.unshift(nyttHuvud); // ormens svans "tas bort" men ett nytt huvud placeras
+
+    //Här kontrollerar koden om ormen har tagit äpplet eller ej 
+    if (snakeX === apple.x && snakeY === apple.y) {
+        poang++; //isåfall poäng tilläggs med 1+
+        document.getElementById("poang").textContent = poang; //Om ormens huvud inte tar äpplet (alltså snakeX och snakeY) 
+        apple = appleposition(); //äpplet får ett nytt random placering i spelcanvaset.
+    } else { //ANNARS
+        snake.pop();//Den sista delen av ormens svans bort  om ormen inte nått äpplet
+    }
+}
+//En random position placeras till äpplet (returneras)
+function appleposition() {
+    return {
+        x: Math.floor(Math.random() * (canvas.width / boxStorlek)) * boxStorlek, //y och x kommer se till att den nya äpplet hamnar inne i spelcanvas/planen
+        y: Math.floor(Math.random() * (canvas.height / boxStorlek)) * boxStorlek
+    };
+}
+//funktionen som kommer visa ett game over meddelande vid spel slut.
+function visaGameOver() {
+    if (!gameOverVisad) { //Om gameovervisad är falskt så kommer inte gameover att visas.
+        clearInterval(spel); //spelloopen stoppas om meddelandet inte visats
+        document.getElementById("gameOverSkarm").style.display = "block"; //Gameover kommer visas med hjälp av display -block 
+        gameOverVisad = true; //Det blir till true om den visaats.
+    }
+}
+// Denna funktion kommer se till så att spelet kan startas om efter gameover meddelandet och tryckt på starta om knappen
+function startaOmSpelet() {
+    clearInterval(spel); //spelloopen stoppas
+    navigation = "höger"; //Alla dessa under kommer att återställas vid knapp trycket.
+    poang = 0;
+    snake = [];
+    snake[0] = {
+        x: 10 * boxStorlek,
+        y: 10 * boxStorlek
+    };
+    apple = appleposition(); // äpplets position återställs
+    document.getElementById("gameOverSkarm").style.display = "none"; //gameover meddelandet kommer att döljas med display-none
+    gameOverVisad = false; //denna kommer att gå tillbaka till false så att inte gameover visas
+    spel = setInterval(spelLogiken, 100); //Spelet kommer att startas om fast nu med 100 milisekunder, kan göra den snabbare
+}
+//Denna kommer att "lyssna" om restart knappen har blivit klickad. och när den blir klickad så kommer spelet att startas om
+document.getElementById("restartKnapp").addEventListener("click", startaOmSpelet);
+
+//Här är lite funktioner till anledningen till gameover, ett krock med sig själv.
+function hanteraKollisioner() {
+    for (let i = 1; i < snake.length; i++) {  //En FOR loop för att se om ormens position stämmer
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+            visaGameOver(); //Nu kan gameover meddelandet visas 
+            return;
+        }
+    }
+}
+//Funktionen som har alla pilars navigering vid tryck
+function tangentNavigering(event) {  //Alla riktingar som trycks på pilarna. event code kontrollerar och uppdaterar navigationen av ormen.
+    if (event.keyCode === 37 && navigation !== "höger") navigation = "vänster";
+    if (event.keyCode === 38 && navigation !== "ner") navigation = "upp";
+    if (event.keyCode === 39 && navigation !== "vänster") navigation = "höger";
+    if (event.keyCode === 40 && navigation !== "upp") navigation = "ner";
+}
+// "lyssnar om tagenknapparna/navigeringarnas knapparna blir nertryckta."
+document.addEventListener("keydown", tangentNavigering);
+
+
+//Paulina Abarca Jara
